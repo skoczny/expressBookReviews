@@ -74,21 +74,22 @@ public_users.get('/author/:author', async function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-    const title = req.params.title
+public_users.get('/title/:title', async function (req, res) {
+    try {
+        const title = req.params.title;
+        const allKeys = Object.keys(books);
+        const booksByTitle = [];
 
-    const allKeys = Object.keys(books)
+        allKeys.forEach(key => {
+            if (books[key].title === title) {
+                booksByTitle.push(books[key]);
+            }
+        });
 
-    const booksbyTitle = []
-
-    allKeys.forEach(key => {
-        if(books[key].title === title){
-            booksbyTitle.push(books[key])
-        }
-    })
-
-    res.send(JSON.stringify(booksbyTitle, null, 4))
+        res.send(JSON.stringify(booksByTitle, null, 4));
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching books by title", error: error.message });
+    }
 });
 
 //  Get book review
